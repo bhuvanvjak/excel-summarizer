@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 import os
 import tempfile
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 from karo.prompts.system_prompt_builder import SystemPromptBuilder
 from rich.console import Console
 from pydantic import Field
@@ -13,8 +13,8 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-load_dotenv(dotenv_path=dotenv_path)
+#dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+#load_dotenv(dotenv_path=dotenv_path)
 
 from karo.core.base_agent import BaseAgent, BaseAgentConfig
 from karo.providers.openai_provider import OpenAIProvider, OpenAIProviderConfig
@@ -44,7 +44,7 @@ with st.sidebar:
         api_key = st.text_input("OpenAI API Key", type="password", help="Enter your OpenAI API key.")
 
         if api_key:
-            os.environ["OPENAI_API_KEY"] = api_key
+            st.session_state["OPENAI_API_KEY"] = api_key
 
         model_choice = st.selectbox("AI Model", ["gpt-4-turbo", "gpt-4"], help="Select the model for summarization.")
     
@@ -52,7 +52,7 @@ with st.sidebar:
         api_key = st.text_input("Anthropic API Key", type="password", help="Enter your Anthropic API key for summarization.")
 
         if api_key:
-            os.environ["ANTHROPIC_API_KEY"] = api_key
+            st.session_state["ANTHROPIC_API_KEY"] = api_key
 
         model_choice = st.selectbox("AI Model", ["claude-3-opus-20240229", "claude-3-sonnet-20240229"], help="Select the model for summarization.")
 
@@ -65,13 +65,13 @@ with st.sidebar:
 def run_summarization(file_path, max_rows, max_cols, provider_type="OpenAI", model_choice="gpt-4-turbo", show_debug=False):
     """Function to summarize the data read from the Excel file."""
     if provider_type == "OpenAI":
-        api_key = os.environ.get("OPENAI_API_KEY")
+        api_key = st.session_state.get("OPENAI_API_KEY")
         if not api_key:
             st.error("OpenAI API key is not set. Please enter your API key in the sidebar.")
             return None
         
     else:
-        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        api_key = st.session_state.get("ANTHROPIC_API_KEY")
         if not api_key:
             st.error("Anthropic API key is not set. Please enter your API key in the sidebar.")
             return None
