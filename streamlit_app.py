@@ -65,13 +65,13 @@ with st.sidebar:
 def run_summarization(file_path, max_rows, max_cols, provider_type="OpenAI", model_choice="gpt-4-turbo", show_debug=False):
     """Function to summarize the data read from the Excel file."""
     if provider_type == "OpenAI":
-        api_key = st.session_state.get("OPENAI_API_KEY")
+        api_key = st.session_state.get("OPENAI_API_KEY", st.secrets.get("OPENAI_API_KEY"))
         if not api_key:
             st.error("OpenAI API key is not set. Please enter your API key in the sidebar.")
             return None
         
     else:
-        api_key = st.session_state.get("ANTHROPIC_API_KEY")
+        api_key = st.session_state.get("ANTHROPIC_API_KEY", st.secrets.get("ANTHROPIC_API_KEY"))
         if not api_key:
             st.error("Anthropic API key is not set. Please enter your API key in the sidebar.")
             return None
